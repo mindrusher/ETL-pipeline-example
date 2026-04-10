@@ -1,0 +1,72 @@
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.8.1
+  env_file:
+    - .env
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+
+  depends_on:
+    - postgres
+  user: "${AIRFLOW_UID}:0"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backups:/backups
+    ports:
+      - "5432:5432"
+
+  airflow-init:
+    <<: *airflow-common
+    container_name: airflow-init
+    entrypoint: /bin/bash
+    command: >
+      -c "
+      airflow db init &&
+      airflow users create
+      --username admin
+      --password admin
+      --firstname admin
+      --lastname admin
+      --role Admin
+      --email admin@example.com
+      "
+    restart: on-failure
+
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: airflow-webserver
+    command: webserver
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./backups:/opt/airflow/backups
+
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: airflow-scheduler
+    command: scheduler
+    restart: always
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./backups:/opt/airflow/backups
+
+  metabase:
+    image: metabase/metabase
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
