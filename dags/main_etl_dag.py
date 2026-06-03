@@ -4,13 +4,14 @@ from airflow.operators.bash import BashOperator
 from airflow.models.baseoperator import cross_downstream
 from datetime import datetime
 import psycopg2
+import os
 
 # ---------- CONFIG ----------
 
 DB_CONFIG = {
-    "host": "postgres",
-    "user": "airflow",
-    "password": "airflow"
+    "host": os.getenv("POSTGRES_HOST"),
+    "user": os.getenv("POSTGRES_USER"),
+    "password": os.getenv("POSTGRES_PASSWORD"),
 }
 
 # ---------- UTILS ----------
