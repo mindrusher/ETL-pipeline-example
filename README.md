@@ -100,6 +100,6 @@ docker-compose up -d
 
 ## Доступ к сервисам
 
-- Airflow	http://http://localhost:8080/        admin/admin
-- Metabase http://http://localhost:3000/
-- Postgres http://http://localhost:5432/       airflow/airflow
+- Airflow	http://localhost:8080/        admin/admin
+- Metabase http://localhost:3000/
+- Postgres http://localhost:5432/       airflow/airflow
