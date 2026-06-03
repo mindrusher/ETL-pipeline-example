@@ -94,8 +94,6 @@ git clone https://github.com/mindrusher/ETL-pipeline-example.git
 # 2. Запустить все сервисы из папки с проектом
 docker-compose up -d
 
-установить Faker внутри контейнеров airflow (pip install Faker) для реалистичных тестовыъ данных
-
 # 3. Для инициализации бд, запустить DAG: init_db_dag
 # 4. Для запуска пайплайна запустить DAG: main_etl_dag
 ```
